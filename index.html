@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha de Cálculo — Obra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#23261F;
+    --ink-soft:#4A4D42;
+    --paper:#F1ECE0;
+    --paper-raised:#FBF8F0;
+    --line:#C9C1AC;
+    --rebar:#C1571F;
+    --rebar-dark:#8E3E14;
+    --concrete:#7C766A;
+    --survey:#4F6357;
+    --survey-dark:#33422F;
+    --danger:#A32D2D;
+    --radius:6px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:0 0 4rem;
+  }
+  header.tag{
+    background:var(--ink);
+    color:var(--paper);
+    padding:1.4rem 1.25rem 1.1rem;
+    position:relative;
+    border-bottom:3px solid var(--rebar);
+  }
+  header.tag .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.12em;
+    color:var(--rebar);
+    text-transform:uppercase;
+    margin:0 0 4px;
+  }
+  header.tag h1{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:34px;
+    line-height:1;
+    margin:0;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+  }
+  header.tag .sub{
+    font-size:13px;
+    color:#C9C4B4;
+    margin:6px 0 0;
+  }
+  .project-row{
+    display:flex;
+    gap:8px;
+    margin-top:14px;
+    flex-wrap:wrap;
+  }
+  .project-row input{
+    background:transparent;
+    border:none;
+    border-bottom:1px dashed #6B6E60;
+    color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:4px 2px;
+    flex:1;
+    min-width:120px;
+  }
+  .project-row input::placeholder{color:#8A8D7C;}
+  .project-row input:focus{outline:none; border-bottom-color:var(--rebar);}
+
+  nav.tabs{
+    display:flex;
+    background:var(--paper-raised);
+    border-bottom:1px solid var(--line);
+  }
+  nav.tabs button{
+    flex:1;
+    background:none;
+    border:none;
+    padding:13px 8px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:var(--concrete);
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+  }
+  nav.tabs button.active{
+    color:var(--ink);
+    border-bottom-color:var(--rebar);
+  }
+
+  section.panel{display:none; padding:1.25rem;}
+  section.panel.active{display:block;}
+
+  .card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1rem 1.1rem 1.1rem;
+    margin-bottom:1rem;
+  }
+  .card h2{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:600;
+    font-size:16px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    margin:0 0 10px;
+    color:var(--ink-soft);
+  }
+  .field{margin-bottom:10px;}
+  .field label{
+    display:block;
+    font-size:12px;
+    color:var(--concrete);
+    margin-bottom:3px;
+  }
+  .field select, .field input{
+    width:100%;
+    padding:9px 10px;
+    font-size:15px;
+    font-family:'IBM Plex Mono', monospace;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:4px;
+    color:var(--ink);
+  }
+  .field select:focus, .field input:focus{
+    outline:none;
+    border-color:var(--rebar);
+  }
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;}
+
+  .preview{
+    background:var(--ink);
+    color:var(--paper);
+    border-radius:4px;
+    padding:10px 12px;
+    margin:10px 0;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .preview .val{font-size:20px; font-weight:500; color:#F2C89A;}
+  .preview.aco .val{color:#B9CDB6;}
+
+  button.add-btn{
+    width:100%;
+    background:var(--rebar);
+    color:#fff;
+    border:none;
+    padding:11px;
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:0.02em;
+    border-radius:4px;
+    cursor:pointer;
+    text-transform:uppercase;
+  }
+  button.add-btn.aco{background:var(--survey);}
+  button.add-btn:active{transform:scale(0.99);}
+
+  .list-title{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--concrete);
+    margin:0 0 8px;
+    border-top:1px dashed var(--line);
+    padding-top:14px;
+  }
+  ul.items{list-style:none; margin:0 0 10px; padding:0;}
+  ul.items li{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 0;
+    border-bottom:1px solid var(--line);
+    font-size:13px;
+  }
+  ul.items li .desc{color:var(--ink-soft);}
+  ul.items li .qty{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:500;
+    color:var(--ink);
+    margin-left:10px;
+    white-space:nowrap;
+  }
+  ul.items li .del{
+    background:none;
+    border:none;
+    color:var(--danger);
+    cursor:pointer;
+    font-size:16px;
+    line-height:1;
+    padding:2px 6px;
+    margin-left:8px;
+  }
+  .empty{
+    color:var(--concrete);
+    font-size:13px;
+    font-style:italic;
+    padding:6px 0 4px;
+  }
+
+  .totals{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:4px;
+  }
+  .totals .box{
+    background:var(--ink);
+    border-radius:4px;
+    padding:12px;
+  }
+  .totals .box .lbl{
+    font-size:11px;
+    color:#A9AC98;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+  .totals .box .num{
+    font-family:'Big Shoulders Display', sans-serif;
+    font-weight:800;
+    font-size:26px;
+    color:var(--paper);
+    margin-top:2px;
+  }
+  .totals .box .num small{font-size:13px; font-weight:600; margin-left:3px; color:#C9C4B4;}
+
+  .note{
+    font-size:12px;
+    color:var(--concrete);
+    line-height:1.5;
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px dashed var(--line);
+  }
+
+  .export-btn{
+    width:100%;
+    background:none;
+    border:1px solid var(--ink);
+    color:var(--ink);
+    padding:10px;
+    font-size:13px;
+    font-weight:600;
+    border-radius:4px;
+    cursor:pointer;
+    margin-top:6px;
+  }
+  textarea#exportBox{
+    width:100%;
+    min-height:140px;
+    margin-top:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:10px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:#fff;
+    color:var(--ink);
+    display:none;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="tag">
+    <p class="eyebrow">Ficha de cálculo · uso em obra</p>
+    <h1>Betão &amp; Aço</h1>
+    <p class="sub">Quantitativos rápidos de campo — não substitui projeto de estabilidade</p>
+    <div class="project-row">
+      <input id="projNome" placeholder="Obra / referência">
+      <input id="projData" type="date">
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="active" data-tab="betao">Betão</button>
+    <button data-tab="aco">Aço</button>
+    <button data-tab="resumo">Resumo</button>
+  </nav>
+
+  <!-- BETAO -->
+  <section class="panel active" id="panel-betao">
+    <div class="card">
+      <h2>Novo elemento</h2>
+      <div class="field">
+        <label>Elemento</label>
+        <select id="b-elemento">
+          <option>Sapata isolada</option>
+          <option>Sapata corrida</option>
+          <option>Pilar</option>
+          <option>Viga</option>
+          <option>Laje</option>
+          <option>Muro</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="row3">
+        <div class="field"><label>Comprimento (m)</label><input id="b-comp" type="number" min="0" step="0.01" value="1"></div>
+        <div class="field"><label>Largura (m)</label><input id="b-larg" type="number" min="0" step="0.01" value="1"></div>
+        <div class="field"><label>Altura / espessura (m)</label><input id="b-alt" type="number" min="0" step="0.01" value="1"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Quantidade de elementos</label><input id="b-qtd" type="number" min="1" step="1" value="1"></div>
+        <div class="field"><label>Desperdício (%)</label><input id="b-desp" type="number" min="0" step="1" value="5"></div>
+      </div>
+      <div class="preview">
+        <span>Volume deste item</span>
+        <span class="val" id="b-preview">0.00 m³</span>
+      </div>
+      <button class="add-btn" onclick="addBetao()">Adicionar à lista</button>
+    </div>
+
+    <p class="list-title">Elementos lançados</p>
+    <ul class="items" id="b-list"></ul>
+    <div class="empty" id="b-empty">Ainda não há elementos nesta lista.</div>
+
+    <div class="totals">
+      <div class="box">
+        <div class="lbl">Volume total</div>
+        <div class="num" id="b-total-vol">0.00<small>m³</small></div>
+      </div>
+      <div class="box">
+        <div class="lbl">Nr de elementos</div>
+        <div class="num" id="b-total-count">0</div>
+      </div>
+    </div>
+    <p class="note">Cálculo simplificado: Volume = comprimento × largura × altura × quantidade × (1 + desperdício). Para sapatas em degraus, vigas em L/T ou lajes nervuradas, calcule por partes e lance cada parte como um item.</p>
+  </section>
+
+  <!-- ACO -->
+  <section class="panel" id="panel-aco">
+    <div class="card">
+      <h2>Novo lote de varões</h2>
+      <div class="row2">
+        <div class="field">
+          <label>Diâmetro</label>
+          <select id="a-diam">
+            <option value="0.222">Ø6 mm</option>
+            <option value="0.395">Ø8 mm</option>
+            <option value="0.617" selected>Ø10 mm</option>
+            <option value="0.888">Ø12 mm</option>
+            <option value="1.578">Ø16 mm</option>
+            <option value="2.466">Ø20 mm</option>
+            <option value="3.853">Ø25 mm</option>
+            <option value="6.313">Ø32 mm</option>
+          </select>
+        </div>
+        <div class="field"><label>Comprimento por varão (m)</label><input id="a-comp" type="number" min="0" step="0.1" value="6"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Nr de varões</label><input id="a-qtd" type="number" min="1" step="1" value="1"></div>
+        <div class="field"><label>Desperdício / traspasse (%)</label><input id="a-desp" type="number" min="0" step="1" value="8"></div>
+      </div>
+      <div class="field">
+        <label>Identificação (opcional)</label>
+        <input id="a-label" type="text" placeholder="Ex: Armadura sapata S1">
+      </div>
+      <div class="preview aco">
+        <span>Peso deste lote</span>
+        <span class="val" id="a-preview">0.00 kg</span>
+      </div>
+      <button class="add-btn aco" onclick="addAco()">Adicionar à lista</button>
+    </div>
+
+    <p class="list-title">Lotes lançados</p>
+    <ul class="items" id="a-list"></ul>
+    <div class="empty" id="a-empty">Ainda não há lotes nesta lista.</div>
+
+    <div class="totals">
+      <div class="box">
+        <div class="lbl">Peso total</div>
+        <div class="num" id="a-total-kg">0.00<small>kg</small></div>
+      </div>
+      <div class="box">
+        <div class="lbl">Em toneladas</div>
+        <div class="num" id="a-total-ton">0.000<small>t</small></div>
+      </div>
+    </div>
+    <p class="note">Cálculo: peso = comprimento × nr de varões × massa por metro × (1 + desperdício/traspasse). Massas por metro conforme tabela de referência para aço nervurado; confirme com a ficha do fornecedor quando disponível.</p>
+  </section>
+
+  <!-- RESUMO -->
+  <section class="panel" id="panel-resumo">
+    <div class="card">
+      <h2>Resumo geral</h2>
+      <div class="totals">
+        <div class="box">
+          <div class="lbl">Betão total</div>
+          <div class="num" id="r-vol">0.00<small>m³</small></div>
+        </div>
+        <div class="box">
+          <div class="lbl">Aço total</div>
+          <div class="num" id="r-aco">0.00<small>kg</small></div>
+        </div>
+      </div>
+      <button class="export-btn" onclick="toggleExport()">Gerar resumo em texto</button>
+      <textarea id="exportBox" readonly></textarea>
+    </div>
+    <p class="note">A lista fica guardada apenas enquanto esta página estiver aberta. Antes de sair, gere o resumo em texto e copie-o para o seu relatório ou WhatsApp.</p>
+  </section>
+
+</div>
+
+<script>
+let betaoItems = [];
+let acoItems = [];
+
+function fmt(n, d){ return Number(n).toLocaleString('pt-PT', {minimumFractionDigits:d, maximumFractionDigits:d}); }
+
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('section.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='resumo') renderResumo();
+  });
+});
+
+function betaoPreviewVal(){
+  const c = parseFloat(document.getElementById('b-comp').value)||0;
+  const l = parseFloat(document.getElementById('b-larg').value)||0;
+  const a = parseFloat(document.getElementById('b-alt').value)||0;
+  const q = parseFloat(document.getElementById('b-qtd').value)||0;
+  const d = parseFloat(document.getElementById('b-desp').value)||0;
+  return c*l*a*q*(1+d/100);
+}
+function updateBetaoPreview(){
+  document.getElementById('b-preview').textContent = fmt(betaoPreviewVal(),2)+' m³';
+}
+['b-comp','b-larg','b-alt','b-qtd','b-desp'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', updateBetaoPreview);
+});
+updateBetaoPreview();
+
+function addBetao(){
+  const elemento = document.getElementById('b-elemento').value;
+  const vol = betaoPreviewVal();
+  const qtd = parseFloat(document.getElementById('b-qtd').value)||0;
+  if(vol<=0){ return; }
+  betaoItems.push({elemento, vol, qtd});
+  renderBetao();
+}
+function removeBetao(i){ betaoItems.splice(i,1); renderBetao(); }
+function renderBetao(){
+  const list = document.getElementById('b-list');
+  const empty = document.getElementById('b-empty');
+  list.innerHTML='';
+  if(betaoItems.length===0){ empty.style.display='block'; }
+  else{
+    empty.style.display='none';
+    betaoItems.forEach((it,i)=>{
+      const li=document.createElement('li');
+      li.innerHTML = '<span class="desc">'+it.elemento+' &times;'+it.qtd+'</span>'+
+        '<span class="qty">'+fmt(it.vol,2)+' m&sup3;<button class="del" onclick="removeBetao('+i+')" aria-label="Remover">&times;</button></span>';
+      list.appendChild(li);
+    });
+  }
+  const totalVol = betaoItems.reduce((s,it)=>s+it.vol,0);
+  const totalCount = betaoItems.reduce((s,it)=>s+it.qtd,0);
+  document.getElementById('b-total-vol').innerHTML = fmt(totalVol,2)+'<small>m³</small>';
+  document.getElementById('b-total-count').textContent = totalCount;
+}
+
+function acoPreviewVal(){
+  const massaM = parseFloat(document.getElementById('a-diam').value)||0;
+  const comp = parseFloat(document.getElementById('a-comp').value)||0;
+  const qtd = parseFloat(document.getElementById('a-qtd').value)||0;
+  const d = parseFloat(document.getElementById('a-desp').value)||0;
+  return massaM*comp*qtd*(1+d/100);
+}
+function updateAcoPreview(){
+  document.getElementById('a-preview').textContent = fmt(acoPreviewVal(),2)+' kg';
+}
+['a-diam','a-comp','a-qtd','a-desp'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', updateAcoPreview);
+  document.getElementById(id).addEventListener('change', updateAcoPreview);
+});
+updateAcoPreview();
+
+function addAco(){
+  const diamSel = document.getElementById('a-diam');
+  const diamLabel = diamSel.options[diamSel.selectedIndex].text;
+  const label = document.getElementById('a-label').value.trim();
+  const peso = acoPreviewVal();
+  const qtd = parseFloat(document.getElementById('a-qtd').value)||0;
+  if(peso<=0){ return; }
+  acoItems.push({diamLabel, label, peso, qtd});
+  document.getElementById('a-label').value='';
+  renderAco();
+}
+function removeAco(i){ acoItems.splice(i,1); renderAco(); }
+function renderAco(){
+  const list = document.getElementById('a-list');
+  const empty = document.getElementById('a-empty');
+  list.innerHTML='';
+  if(acoItems.length===0){ empty.style.display='block'; }
+  else{
+    empty.style.display='none';
+    acoItems.forEach((it,i)=>{
+      const desc = (it.label? it.label+' — ':'') + it.diamLabel + ' &times;'+it.qtd;
+      const li=document.createElement('li');
+      li.innerHTML = '<span class="desc">'+desc+'</span>'+
+        '<span class="qty">'+fmt(it.peso,2)+' kg<button class="del" onclick="removeAco('+i+')" aria-label="Remover">&times;</button></span>';
+      list.appendChild(li);
+    });
+  }
+  const totalKg = acoItems.reduce((s,it)=>s+it.peso,0);
+  document.getElementById('a-total-kg').innerHTML = fmt(totalKg,2)+'<small>kg</small>';
+  document.getElementById('a-total-ton').innerHTML = fmt(totalKg/1000,3)+'<small>t</small>';
+}
+
+function renderResumo(){
+  const totalVol = betaoItems.reduce((s,it)=>s+it.vol,0);
+  const totalKg = acoItems.reduce((s,it)=>s+it.peso,0);
+  document.getElementById('r-vol').innerHTML = fmt(totalVol,2)+'<small>m³</small>';
+  document.getElementById('r-aco').innerHTML = fmt(totalKg,2)+'<small>kg</small>';
+}
+
+function toggleExport(){
+  const box = document.getElementById('exportBox');
+  if(box.style.display==='block'){ box.style.display='none'; return; }
+  const nome = document.getElementById('projNome').value || 'Sem referência';
+  const data = document.getElementById('projData').value || '—';
+  let txt = 'FICHA DE CÁLCULO — OBRA\n';
+  txt += 'Referência: '+nome+'\n';
+  txt += 'Data: '+data+'\n\n';
+  txt += '--- BETÃO ---\n';
+  if(betaoItems.length===0){ txt += '(sem elementos lançados)\n'; }
+  betaoItems.forEach(it=>{ txt += '- '+it.elemento+' x'+it.qtd+': '+fmt(it.vol,2)+' m3\n'; });
+  txt += 'Total betão: '+fmt(betaoItems.reduce((s,it)=>s+it.vol,0),2)+' m3\n\n';
+  txt += '--- AÇO ---\n';
+  if(acoItems.length===0){ txt += '(sem lotes lançados)\n'; }
+  acoItems.forEach(it=>{ txt += '- '+(it.label?it.label+' | ':'')+it.diamLabel+' x'+it.qtd+': '+fmt(it.peso,2)+' kg\n'; });
+  const totalKg = acoItems.reduce((s,it)=>s+it.peso,0);
+  txt += 'Total aço: '+fmt(totalKg,2)+' kg ('+fmt(totalKg/1000,3)+' t)\n';
+  box.value = txt;
+  box.style.display='block';
+}
+</script>
+</body>
+</html>
