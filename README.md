@@ -30,4 +30,8 @@ Para uso comercial ou parcerias, contacte: [basiluabo2005@gmail.com]
 
 ---
 
-Desenvolvido por [seu nome] — Fiscal de Obras & WebDev.
+Desenvolvido por [Basiluabo Pedro da Cruz] — Fiscal de Obras & WebDev.
+
+
+
+
